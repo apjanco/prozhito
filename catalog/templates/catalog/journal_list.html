@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Journals List</h1>
+  {% if journal_list %}
+  <ul>
+    {% for journal in journal_list %}
+      <li>
+        <a href="{{ journal.get_absolute_url }}">{{ journal.name }}</a> 
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no journals in our database.</p>
+  {% endif %}
+{% endblock %}

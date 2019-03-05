@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Name: {{ journal.name }}</h1>
+
+  <div style="margin-left:20px;margin-top:20px">
+
+    {% for edition in journal.edition %}
+      <p>{{ edition.number }}
+    {% endfor %}
+  </div>
+{% endblock %}
