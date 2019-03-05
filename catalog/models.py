@@ -4,6 +4,7 @@ from django.urls import reverse # Used to generate URLs by reversing the URL pat
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
+import uuid
 
 class Journal(models.Model):
     """Model representing a journal."""
@@ -48,19 +49,14 @@ class Edition(models.Model):
         return (str(self.journal) + ", " + str(self.year) + ", " + str(self.number) + " edition")
 
 class Publication(models.Model):
-    """Model representing a publication (but not a specific copy of an publication)."""
+
+    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular publication')
     title = models.CharField(max_length=200)
-    # Foreign Key used because book can only have one author, but authors can have multiple books
-    # Author as a string rather than object because it hasn't been declared yet in the file
+
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True)
     edition = models.ForeignKey(Edition, on_delete=models.SET_NULL, null=True)
     text = models.TextField(help_text='Text of the publication')
     date = models.DateField(auto_now_add = True, help_text='Date when publication was published')
-
-
-    # ManyToManyField used because genre can contain many books. Books can cover many genres.
-    # Genre class has already been defined so we can specify the object above.
-
 
     def __str__(self):
         """String for representing the Model object."""

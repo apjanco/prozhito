@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from django.views import generic
+
 # Create your views here.
 from catalog.models import Publication, Author, Journal, Edition
 
@@ -22,3 +24,9 @@ def index(request):
 
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
+
+class PublicationListView(generic.ListView):
+    model = Publication
+
+class PublicationDetailView(generic.DetailView):
+    model = Publication
