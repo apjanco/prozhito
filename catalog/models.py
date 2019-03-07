@@ -14,6 +14,10 @@ class Journal(models.Model):
         """String for representing the Model object."""
         return self.name
 
+    def get_absolute_url(self):
+        """Returns the url to access a detail record for this journal."""
+        return reverse('journal-detail', args=[str(self.id)])
+
 class Author(models.Model):
     "Model representing the author of an publication"
 
@@ -63,5 +67,5 @@ class Publication(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        """Returns the url to access a detail record for this book."""
+        """Returns the url to access a detail record for this publication."""
         return reverse('publication-detail', args=[str(self.id)])

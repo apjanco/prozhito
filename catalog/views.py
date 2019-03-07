@@ -30,3 +30,9 @@ class PublicationListView(generic.ListView):
 
 class PublicationDetailView(generic.DetailView):
     model = Publication
+
+class JournalListView(generic.ListView):
+    model = Journal
+
+class JournalDetailView(generic.DetailView):
+    model = Journal
