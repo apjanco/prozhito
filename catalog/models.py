@@ -46,7 +46,7 @@ class Edition(models.Model):
     number = models.IntegerField(help_text='Number of the edition')
     year = models.IntegerField(help_text='Year of the edition', validators=[MinValueValidator(0),
                                        MaxValueValidator(datetime.date.today().year+1)])
-    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True)
+    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True, related_name="journal")
 
     def __str__(self):
         """String for representing the Model object."""
