@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse # Used to generate URLs by reversing the URL patterns
 
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.html import format_html
 import datetime
 import uuid
 
@@ -55,12 +56,19 @@ class Edition(models.Model):
 class Publication(models.Model):
 
     #id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular publication')
-    title = models.CharField(max_length=200)
-
-    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True)
-    edition = models.ForeignKey(Edition, on_delete=models.SET_NULL, null=True)
-    text = models.TextField(help_text='Text of the publication')
-    date = models.DateField(auto_now_add = True, help_text='Date when publication was published')
+    title = models.TextField(help_text='Text of the publication', blank=True,)
+    author = models.CharField(max_length=200, blank=True,)
+    journal = models.CharField(max_length=200, blank=True,)
+    text = models.TextField(help_text='Text of the publication', blank=True,)
+    year = models.IntegerField(null=True, blank=True, default=None,)
+    issue = models.IntegerField(null=True, blank=True, default=None,)
+    url = models.TextField(help_text='Text of the publication', blank=True,)
+    #is_translation = Binary
+    #translator =
+    #From TOC
+    #order in toc
+    #genre <i>
+    #category in toc <h6>
 
     def __str__(self):
         """String for representing the Model object."""
@@ -68,4 +76,18 @@ class Publication(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detail record for this publication."""
-        return reverse('publication-detail', args=[str(self.id)])
+        return format_html(u'<a target="_blank" href="{}">{}</a>'.format(self.url, self.url))
+
+class TableofContents(models.Model):
+    order = models.IntegerField(null=True, blank=True, default=None)
+    journal = models.CharField(max_length=200, blank=True,)
+    year = models.IntegerField(null=True, blank=True, default=None)
+    issue = models.IntegerField(null=True, blank=True, default=None)
+    category = models.CharField(max_length=200, blank=True,null=True,)
+    author = models.CharField(max_length=200, blank=True,null=True,)
+    link = models.CharField(max_length=200, blank=True,null=True,)
+    title = models.TextField(help_text='Text of the publication', blank=True,null=True,)
+    genre = models.TextField(help_text='Text of the publication', blank=True,null=True,)
+    text= models.TextField(help_text='Text of the publication', blank=True,null=True,)
+
+
