@@ -25,12 +25,13 @@ class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
+    full_name = str(first_name) + " " + str(last_name)
     def __str__(self):
         """String for representing the Model object."""
         return self.last_name
 
     class Meta:
-        ordering = ['last_name', 'first_name']
+        ordering = ['first_name', 'last_name']
 
     def get_absolute_url(self):
         """Returns the url to access a particular author instance."""
@@ -38,7 +39,7 @@ class Author(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.last_name}, {self.first_name}'
+        return f'{self.first_name} {self.last_name}'
 
 
 class Edition(models.Model):
@@ -55,10 +56,12 @@ class Edition(models.Model):
 
 class Publication(models.Model):
 
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular publication')
+
     title = models.TextField(help_text='Text of the publication', blank=True,)
-    author = models.CharField(max_length=200, blank=True,)
-    journal = models.CharField(max_length=200, blank=True,)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, max_length=200, null=True,)
+    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, max_length=200, null=True,)
+    #author = models.CharField(max_length=200, blank=True,)
+    #journal = models.CharField(max_length=200, blank=True,)
     text = models.TextField(help_text='Text of the publication', blank=True,)
     year = models.IntegerField(null=True, blank=True, default=None,)
     issue = models.IntegerField(null=True, blank=True, default=None,)
@@ -76,7 +79,8 @@ class Publication(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detail record for this publication."""
-        return format_html(u'<a target="_blank" href="{}">{}</a>'.format(self.url, self.url))
+        #return format_html(u'<a target="_blank" href="{}">{}</a>'.format(self.url, self.url))
+        return reverse('publication-detail', args=[str(self.id)])
 
 class TableofContents(models.Model):
     order = models.IntegerField(null=True, blank=True, default=None)
@@ -89,5 +93,3 @@ class TableofContents(models.Model):
     title = models.TextField(help_text='Text of the publication', blank=True,null=True,)
     genre = models.TextField(help_text='Text of the publication', blank=True,null=True,)
     text= models.TextField(help_text='Text of the publication', blank=True,null=True,)
-
-

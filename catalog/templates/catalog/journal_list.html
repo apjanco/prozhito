@@ -1,4 +1,4 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
   <h1>Journals List</h1>
@@ -6,7 +6,7 @@
   <ul>
     {% for journal in journal_list %}
       <li>
-        <a href="{{ journal.get_absolute_url }}">{{ journal.name }}</a> 
+        <a href="{{ journal.get_absolute_url }}">{{ journal.name }}</a>
       </li>
     {% endfor %}
   </ul>

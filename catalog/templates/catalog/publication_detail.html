@@ -1,13 +1,10 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
-  <h1>Title: {{ publication.title }}</h1>
+  <h5>Title: {{ publication.title }}</h5>
 
-  <p><strong>Author:</strong> <a href="">{{ publication.author }}</a></p> <!-- author detail link not yet defined -->
-  
+  <p><strong>Author: {{ publication.author }}</strong> <a href=""></a></p> <!-- author detail link not yet defined -->
+
   <p> {{ publication.text }}</p>
-  <div style="margin-left:20px;margin-top:20px">
-
-
-  </div>
+  
 {% endblock %}

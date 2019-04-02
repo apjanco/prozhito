@@ -1,0 +1,19 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+<p><strong>Author: {{ author.first_name }} {{ author.last_name }} </strong>
+
+    {% if author.publication_set.all %}
+    <ul>
+      {% for publication in author.publication_set.all %}
+        <li>
+          <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>У этого автора нет публикаций. </p>
+    {% endif %}
+
+
+{% endblock %}

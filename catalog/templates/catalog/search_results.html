@@ -1,0 +1,17 @@
+{% extends "catalog/search.html" %}
+
+{% block search_results %}
+<strong>Search Results: {{ num_results }}</strong>
+
+  {% if publications %}
+  <ol>
+    {% for publication in publications %}
+      <li>
+        <a href="{{ publication.get_absolute_url }}">{{ publication.title }}, {{ publication.author }}</a>
+      </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+      <p> No publications found </p>
+  {% endif %}
+{% endblock search_results %}

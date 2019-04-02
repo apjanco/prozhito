@@ -1,4 +1,4 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
   <h1>Publications List</h1>
@@ -6,7 +6,7 @@
   <ul>
     {% for publication in publication_list %}
       <li>
-        <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a> ({{publication.author}})
+        <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
       </li>
     {% endfor %}
   </ul>
