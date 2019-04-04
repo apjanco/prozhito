@@ -11,5 +11,6 @@ urlpatterns = [
     path('search/', views.getPublicationByAuthor, name='search'),
     path('authors/', views.AuthorListView.as_view(), name='authors'),
     path('author/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
+    path('range/', views.range, name="range"),
     # path('search_results/', views.PublicationListView.as_view(), name='publications'),
 ]

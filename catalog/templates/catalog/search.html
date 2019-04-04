@@ -6,17 +6,27 @@
 
 {% block content %}
   <div class="row">
-  <div class="col-md-5">
+  <div class="col-md-6">
 
     <strong>Search</strong>
     <form action="" method="GET">
       <label for="author">Enter keywords: </label>
       <input id="author" type="text" name="author_name" value="{{ request.GET.author_name }}">
+      <div id="myspecialdiv">
+        <iframe width="100%" height="75" scrolling="no" frameborder="0" src="{% url 'range' %}"></iframe>
+      </div>
       <button class="btn btn-success" type="submit"> Submit </button>
     </form>
+
+
+
+
+
+
+
   </div>
 
-  <div class="col-md-7">
+  <div class="col-md-6">
     {% block search_results %} {% endblock search_results %}
   </div>
   </div>

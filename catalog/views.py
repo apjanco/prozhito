@@ -32,6 +32,9 @@ def index(request):
 def search(request):
     return render(request, 'catalog/search.html')
 
+def range(request):
+    return render(request, 'catalog/divcontent.html')
+
 def search_results(request):
     context={
         'publications': ["1", "2"]
