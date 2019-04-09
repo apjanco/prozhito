@@ -2,31 +2,50 @@
 
 {% block title %}
   <title>Search</title>
+
+
 {% endblock %}
 
 {% block content %}
   <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-4">
 
-    <strong>Search</strong>
-    <form action="" method="GET">
-      <label for="author">Enter keywords: </label>
-      <input id="author" type="text" name="author_name" value="{{ request.GET.author_name }}">
-      <div id="myspecialdiv">
+    <strong>Параметры поиска:</strong>
+    <form action="" method="GET" autocomplete="off">
+      <label for="keyword">Ключевые слова: </label>
+      <input id="keyword" type="text" name="keyword" value="{{ request.GET.keyword }}">
+      <div id="search_div">
         <iframe width="100%" height="75" scrolling="no" frameborder="0" src="{% url 'range' %}"></iframe>
       </div>
+      <label for="year_min">Годы публикации from:</label> </br>
+      <input type="range" name="year_min" id="year_min" value="{{ request.GET.year_min }}" value="1920" min="0" max="2019"></br>
+      <label for="year_max">Годы публикации to:</label></br>
+      <input type="range" name="year_max" id="year_max" value="{{ request.GET.year_max }}" value="2000" min="0" max="2019">
+
+      <!-- <label for="author_name">Автор: </label>
+      <input id="author_name" type="text" name="author_name" value="{{ request.GET.author_name }}"> -->
+
+      <input list="authors" id="author_name" name="author_name" value="{{ request.GET.author_name }}">
+        <datalist id="authors">
+          <option value="">
+          {% if authors %}
+            {% for author in authors %}
+              <option  value="{{ author.last_name }}">{{author}}</option>
+
+            {% endfor %}
+          {% else %}
+            <option value="None">
+          {% endif %}
+
+        </datalist>
       <button class="btn btn-success" type="submit"> Submit </button>
     </form>
 
 
 
-
-
-
-
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-8">
     {% block search_results %} {% endblock search_results %}
   </div>
   </div>

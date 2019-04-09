@@ -1,13 +1,14 @@
 {% extends "catalog/search.html" %}
 
 {% block search_results %}
-<strong>Search Results: {{ num_results }}</strong>
+<strong>Результаты поиска: {{ num_results }}</strong>
 
   {% if publications %}
   <ol>
     {% for publication in publications %}
       <li>
-        <a href="{{ publication.get_absolute_url }}">{{ publication.title }}, {{ publication.author }}</a>
+        <a href="{{ publication.get_absolute_url }}"><strong>{{ publication.title }}</strong>, {{ publication.author }}
+          ({{ publication.journal }}, {{ publication.issue }}, {{ publication.year }})</a>
       </li>
     {% endfor %}
   </ol>

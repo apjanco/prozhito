@@ -5,14 +5,15 @@
   <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
-  <form method="post" action="/action_page_post.php">
+  <!-- <form method="post" action="/action_page_post.php"> -->
+  
     <div data-role="rangeslider">
-      <label for="price-min">Years of publication:</label>
-      <input type="range" name="price-min" id="price-min" value="200" min="0" max="1000">
-      <label for="price-max">Years of publication:</label>
-      <input type="range" name="price-max" id="price-max" value="800" min="0" max="1000">
+      <label for="year_min">Годы публикации:</label>
+      <input type="range" name="year_min" id="year_min" value="{{ request.GET.year_min }}" value="1920" min="0" max="2019">
+      <label for="year_max">Годы публикации:</label>
+      <input type="range" name="year_max" id="year_max" value="{{ request.GET.year_max }}" value="2000" min="0" max="2019">
     </div>
 
-  </form>
+  <!-- </form> -->
 </body>
 </html>

@@ -30,16 +30,15 @@ def index(request):
     return render(request, 'catalog/index.html', context=context)
 
 def search(request):
-    return render(request, 'catalog/search.html')
+    authors = Author.objects.all()
+    context = {
+        'authors': authors
+    }
+    return render(request, 'catalog/search.html', context)
 
 def range(request):
     return render(request, 'catalog/divcontent.html')
 
-def search_results(request):
-    context={
-        'publications': ["1", "2"]
-        }
-    return render(request, "catalog/search_results.html", context)
 
 class PublicationListView(generic.ListView):
     model = Publication
@@ -59,9 +58,9 @@ class AuthorListView(generic.ListView):
 class AuthorDetailView(generic.DetailView):
     model = Author
 
-def getPublicationByAuthor(request):
+def getPublicationByKeyword(request):
     template = "catalog/search_results.html"
-    query = request.GET.get("author_name")
+    query = request.GET.get("keyword")
     if not query==None:
         results = Publication.objects.filter(Q(title__icontains=query))
         num_publications = results.count()
@@ -73,3 +72,27 @@ def getPublicationByAuthor(request):
         return render(request, template, context)
     else:
         return render(request, template, context=None)
+
+def getPublicationByAuthor(request):
+    authors = Author.objects.all()
+    template = "catalog/search_results.html"
+    author_query = request.GET.get("author_name")
+    start_year_query = request.GET.get("year_min")
+    end_year_query = request.GET.get("year_max")
+    if not (author_query==None):
+        results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
+        num_publications = results.count()
+        context = {
+        'publications': results,
+        'num_results': num_publications,
+        'authors': authors
+        }
+#author__last_name__icontains=author_query and
+        return render(request, template, context)
+    else:
+        context = {
+        'publications': None,
+        'num_results': 0,
+        'authors': authors
+        }
+        return render(request, template, context)
