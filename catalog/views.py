@@ -79,13 +79,15 @@ def getPublicationByAuthor(request):
     author_query = request.GET.get("author_name")
     start_year_query = request.GET.get("year_min")
     end_year_query = request.GET.get("year_max")
+    year = request.GET.get("rangeYear")
     if not (author_query==None):
         results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
         num_publications = results.count()
         context = {
         'publications': results,
         'num_results': num_publications,
-        'authors': authors
+        'authors': authors,
+        'year': year,
         }
 #author__last_name__icontains=author_query and
         return render(request, template, context)
@@ -93,7 +95,8 @@ def getPublicationByAuthor(request):
         context = {
         'publications': None,
         'num_results': 0,
-        'authors': authors
+        'authors': authors,
+        'year': year,
         }
         return render(request, template, context)
 

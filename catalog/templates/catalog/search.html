@@ -3,20 +3,18 @@
 {% block title %}
   <title>Search</title>
 
+  </script>
 
 {% endblock %}
 
 {% block content %}
   <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-3">
 
     <strong>Параметры поиска:</strong>
     <form action="" method="GET" autocomplete="off">
-      <label for="keyword">Ключевые слова: </label>
-      <input id="keyword" type="text" name="keyword" value="{{ request.GET.keyword }}">
-      <div id="search_div">
-        <iframe width="100%" height="75" scrolling="no" frameborder="0" src="{% url 'range' %}"></iframe>
-      </div>
+
+
       <label for="year_min">Годы публикации from:</label> </br>
       <input type="range" name="year_min" id="year_min" value="{{ request.GET.year_min }}" value="1920" min="0" max="2019"></br>
       <label for="year_max">Годы публикации to:</label></br>
@@ -24,7 +22,8 @@
 
       <!-- <label for="author_name">Автор: </label>
       <input id="author_name" type="text" name="author_name" value="{{ request.GET.author_name }}"> -->
-
+      <br/>
+      <label for="authors">Автор:</label></br>
       <input list="authors" id="author_name" name="author_name" value="{{ request.GET.author_name }}">
         <datalist id="authors">
           <option value="">
@@ -38,9 +37,50 @@
           {% endif %}
 
         </datalist>
+
+        <div id="range" style="margin-top: 4em; margin-bottom: 2em" ></div>
+
+        <input id="rangeYear" type="text" value="{{ request.GET.rangeYear }}" />
+         <p id="range1"></p>
+         <p id="range2"></p>
+
+        <script>
+          var range = document.getElementById('range');
+
+          noUiSlider.create(range, {
+              range: {
+                  'min': 1900,
+                  'max': 2019
+              },
+              step: 1,
+              // Handles start at ...
+              start: [1919, 2000],
+              // Display colored bars between handles
+              connect: true,
+              tooltips: true,
+              format: wNumb({
+                  decimals: 0
+              }),
+          });
+
+          var valuesDivs = [
+            document.getElementById('range1'),
+            document.getElementById('range2'),
+          ];
+
+
+          range.noUiSlider.on('update', function (values, handle) {
+            valuesDivs[handle].innerHTML = values[handle];
+            document.getElementById('rangeYear').value = values[0] ;
+          });
+
+
+        </script>
+
       <button class="btn btn-success" type="submit"> Submit </button>
     </form>
 
+    <p>{{ year }}</p>
 
 
   </div>
