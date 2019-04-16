@@ -96,3 +96,27 @@ def getPublicationByAuthor(request):
         'authors': authors
         }
         return render(request, template, context)
+
+
+def getPublicationByAuthor2(request):
+    authors = Author.objects.all()
+    template = "catalog/search_results.html"
+    author_query = request.GET.get("author_name")
+    start_year_query = request.GET.get("year_min")
+    end_year_query = request.GET.get("year_max")
+
+    if start_year_query==None:      #if no start year was input, set default to zero
+        start_year_query = 0
+    if end_year_query==None:        #if no end year was input, set default to the most current year
+        end_year_query = datetime.date.now().year
+    if author_query==None:          #if no author was input, set author query to empty string to include all authors
+        author_query = ""
+
+    results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
+    context={
+    'publications': results,
+    'num_results': results.count(),
+    'authors': authors
+    }
+
+    return render(request, template, context)
