@@ -1,0 +1,22 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+<p><strong>Издание: {{ edition }} </strong>
+
+    {% if edition.publication_set.all %}
+    <ul>
+      {% for publication in edition.publication_set.all %}
+        <li>
+          <a href="{{ publication.get_absolute_url }}">
+            <strong>{{ publication.title }}</strong>, {{ publication.author }}
+              ({{ publication.issue }})
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>У этого издания нет публикаций. </p>
+    {% endif %}
+
+
+{% endblock %}

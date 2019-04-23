@@ -48,11 +48,15 @@ class Edition(models.Model):
     number = models.IntegerField(help_text='Number of the edition')
     year = models.IntegerField(help_text='Year of the edition', validators=[MinValueValidator(0),
                                        MaxValueValidator(datetime.date.today().year+1)])
-    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True, related_name="journal")
+    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True)
+
+    def get_absolute_url(self):
+        """Returns the url to access a particular edition instance."""
+        return reverse('edition-detail', args=[str(self.id)])
 
     def __str__(self):
         """String for representing the Model object."""
-        return (str(self.journal) + ", " + str(self.year) + ", " + str(self.number) + " edition")
+        return (str(self.journal) + " " + str(self.year) + ", " + str(self.number))
 
 class Publication(models.Model):
 
@@ -64,7 +68,7 @@ class Publication(models.Model):
     #journal = models.CharField(max_length=200, blank=True,)
     text = models.TextField(help_text='Text of the publication', blank=True,)
     year = models.IntegerField(null=True, blank=True, default=None,)
-    issue = models.IntegerField(null=True, blank=True, default=None,)
+    issue = models.ForeignKey(Edition, on_delete=models.SET_NULL, max_length=200, null=True,)
     url = models.TextField(help_text='Text of the publication', blank=True,)
     #is_translation = Binary
     #translator =

@@ -1,15 +1,19 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-  <h1>Name: {{ journal.name }}</h1>
+  <strong>Журнал: {{ journal.name }} </strong>
 
-  <div style="margin-left:20px;margin-top:20px">
-
-    {% for edition in edition %}
-      <p>{{ edition.number }}
-    {% endfor %}
-  </div>
-
+    {% if journal.edition_set.all %}
+    <ul>
+      {% for edition in journal.edition_set.all %}
+        <li>
+          <a href="{{ edition.get_absolute_url }}">{{ edition }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>У этого автора нет публикаций. </p>
+    {% endif %}
 
 
 {% endblock %}

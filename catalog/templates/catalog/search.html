@@ -11,39 +11,36 @@
   <div class="row">
   <div class="col-md-3">
 
-    <strong>Параметры поиска:</strong>
-    <form action="" method="GET" autocomplete="off">
 
+    <form class="border p-3 bg-white" action="#" method="GET" autocomplete="off">
+      <strong>Параметры поиска:</strong>
+      <div class="form-group ">
+        <label for="authors">Автор:</label></br>
+        <input class="form-control" list="authors" id="author_name" name="author_name" value="{{ request.GET.author_name }}">
+          <datalist id="authors">
+            <option value="">
+            {% if authors %}
+              {% for author in authors %}
+                <option  value="{{ author.last_name }}">{{author}}</option>
+              {% endfor %}
+            {% else %}
+              <option value="None">
+            {% endif %}
 
-      <label for="year_min">Годы публикации from:</label> </br>
-      <input type="range" name="year_min" id="year_min" value="{{ request.GET.year_min }}" value="1920" min="0" max="2019"></br>
-      <label for="year_max">Годы публикации to:</label></br>
-      <input type="range" name="year_max" id="year_max" value="{{ request.GET.year_max }}" value="2000" min="0" max="2019">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label for="range">Диапазон годов выпуска:</label>
+          <div id="range" class="" style="margin-top: 3em; margin-bottom: 1em" ></div>
+          <div class="row mt-0">
+            <small class="col text-left text-muted" id="range1"></small>
+            <small class="col text-right text-muted" id="range2"></small>
+          </div>
 
-      <!-- <label for="author_name">Автор: </label>
-      <input id="author_name" type="text" name="author_name" value="{{ request.GET.author_name }}"> -->
-      <br/>
-      <label for="authors">Автор:</label></br>
-      <input list="authors" id="author_name" name="author_name" value="{{ request.GET.author_name }}">
-        <datalist id="authors">
-          <option value="">
-          {% if authors %}
-            {% for author in authors %}
-              <option  value="{{ author.last_name }}">{{author}}</option>
+          <input id="startYear" name="startYear" type="hidden" value="{{ startYear }}" />
+          <input id="endYear" name="endYear" type="hidden" value="{{ endYear }}" />
 
-            {% endfor %}
-          {% else %}
-            <option value="None">
-          {% endif %}
-
-        </datalist>
-
-        <div id="range" style="margin-top: 4em; margin-bottom: 2em" ></div>
-
-        <input id="rangeYear" type="text" value="{{ request.GET.rangeYear }}" />
-         <p id="range1"></p>
-         <p id="range2"></p>
-
+        </div>
         <script>
           var range = document.getElementById('range');
 
@@ -67,20 +64,18 @@
             document.getElementById('range1'),
             document.getElementById('range2'),
           ];
-
-
           range.noUiSlider.on('update', function (values, handle) {
             valuesDivs[handle].innerHTML = values[handle];
-            document.getElementById('rangeYear').value = values[0] ;
+            document.getElementById('startYear').value = values[0] ;
+            document.getElementById('endYear').value = values[1] ;
           });
 
 
         </script>
 
-      <button class="btn btn-success" type="submit"> Submit </button>
+      <button class="btn btn-info" type="submit"> Submit </button>
     </form>
 
-    <p>{{ year }}</p>
 
 
   </div>

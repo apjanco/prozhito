@@ -7,7 +7,7 @@
   <ol>
     {% for publication in publications %}
       <li>
-        <a href="{{ publication.get_absolute_url }}"><strong>{{ publication.title }}</strong>, {{ publication.author }}
+        <a class="text-info" href="{{ publication.get_absolute_url }}"><strong>{{ publication.title }}</strong>, {{ publication.author }}
           ({{ publication.journal }}, {{ publication.issue }}, {{ publication.year }})</a>
       </li>
     {% endfor %}

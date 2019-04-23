@@ -58,6 +58,12 @@ class AuthorListView(generic.ListView):
 class AuthorDetailView(generic.DetailView):
     model = Author
 
+class EditionListView(generic.ListView):
+    model = Edition
+
+class EditionDetailView(generic.DetailView):
+    model = Edition
+
 def getPublicationByKeyword(request):
     template = "catalog/search_results.html"
     query = request.GET.get("keyword")
@@ -74,12 +80,12 @@ def getPublicationByKeyword(request):
         return render(request, template, context=None)
 
 def getPublicationByAuthor(request):
-    authors = Author.objects.all()
+    authors = Author.objects.all().order_by("last_name")
     template = "catalog/search_results.html"
     author_query = request.GET.get("author_name")
-    start_year_query = request.GET.get("year_min")
-    end_year_query = request.GET.get("year_max")
-    year = request.GET.get("rangeYear")
+    start_year_query = request.GET.get("startYear")
+    end_year_query = request.GET.get("endYear")
+    year = request.GET.get("startYear")
     if not (author_query==None):
         results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
         num_publications = results.count()
