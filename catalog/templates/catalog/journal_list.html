@@ -6,7 +6,7 @@
   <ul>
     {% for journal in journal_list %}
       <li>
-        <a href="{{ journal.get_absolute_url }}">{{ journal.name }}</a>
+        <a class="text-info" href="{{ journal.get_absolute_url }}">{{ journal.name }}</a>
       </li>
     {% endfor %}
   </ul>

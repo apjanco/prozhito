@@ -3,16 +3,26 @@
 {% block content %}
   <strong>Журнал: {{ journal.name }} </strong>
 
+
+  {% regroup journal.edition_set.all|dictsortreversed:"year" by year as year_list %}
     {% if journal.edition_set.all %}
     <ul>
-      {% for edition in journal.edition_set.all %}
+      {% for year in year_list %}
         <li>
-          <a href="{{ edition.get_absolute_url }}">{{ edition }}</a>
+          <a>{{ year.grouper }}</a>
+          <ul>
+            {% for edition in year.list %}
+            <li>
+              <a class="text-info" href="{{ edition.get_absolute_url }}">{{ edition }}</a>
+            </li>
+            {% endfor %}
+          </ul>
         </li>
+
       {% endfor %}
     </ul>
     {% else %}
-      <p>У этого автора нет публикаций. </p>
+      <p>У этого журнала нет изданий или публикаций. </p>
     {% endif %}
 
 

@@ -7,7 +7,7 @@
     <ul>
       {% for publication in author.publication_set.all %}
         <li>
-          <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
+          <a class="text-info" href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
         </li>
       {% endfor %}
     </ul>

@@ -8,7 +8,7 @@
     {% for publication in publications %}
       <li>
         <a class="text-info" href="{{ publication.get_absolute_url }}"><strong>{{ publication.title }}</strong>, {{ publication.author }}
-          ({{ publication.journal }}, {{ publication.issue }}, {{ publication.year }})</a>
+          (<i>{{ publication.issue.journal }}</i> , {{ publication.issue.year }}, {{ publication.issue.number }})</a>
       </li>
     {% endfor %}
   </ol>
@@ -17,4 +17,7 @@
   {% endif %}
 
 
+  <button type="button" class="btn btn-info" href="divcontent.html" download>Download
+
+  </button>
 {% endblock search_results %}
