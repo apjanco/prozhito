@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -15,4 +15,6 @@ urlpatterns = [
     path('author/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
     path('range/', views.range, name="range"),
     # path('search_results/', views.PublicationListView.as_view(), name='publications'),
+    path('texts/', TemplateView.as_view(template_name="templates/catalog/texts/12tur-pr0.html"), name='texts'),
+    path('download/', views.some_view, name="download"),
 ]

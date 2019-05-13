@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import generic
-
+import csv
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -105,6 +106,21 @@ def getPublicationByAuthor(request):
         'year': year,
         }
         return render(request, template, context)
+
+
+def some_view(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Publication-Disposition'] = 'attachment; filename="search_results.csv"'
+    #figure out how to get values from html to here
+    #run the query again
+    #write a temp file in memory with the search results so that user can download it
+    #NamedTemporaryFile() - write the result to that file as a csv, pass that to a template
+    writer = csv.writer(response)
+    writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+    writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
+
+    return response
 
 
 def getPublicationByAuthor2(request):
