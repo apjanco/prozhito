@@ -20,7 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e0e9!px-b**9lah*t8(sp7*92=wmbzc&p$db55!h#dh*!koi!n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,7 +85,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'diaries',
         'USER': 'journals',
-        'PASSWORD': '&88a>7fmH]wNTqT7',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
