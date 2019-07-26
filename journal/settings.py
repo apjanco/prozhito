@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog.apps.CatalogConfig',
+    'django_markup',
 ]
 
 MIDDLEWARE = [
@@ -77,22 +78,20 @@ WSGI_APPLICATION = 'journal.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-   }
-
-    #  'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'journals1',
-    #     'USER': 'ikhovryak',
-    #     'PASSWORD': 'HaverfordDS',
-    #     'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
-    #     'PORT': '3306',
-    # }
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'diaries',
+        'USER': 'journals',
+        'PASSWORD': '&88a>7fmH]wNTqT7',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+    }
 
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

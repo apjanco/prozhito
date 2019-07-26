@@ -23,9 +23,15 @@ from django.views.generic import RedirectView
 
 from django.conf import settings
 from django.conf.urls.static import static
+import catalog.views as views
+from catalog.views import DiariesJson
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('datatable/', DiariesJson.as_view(), name='diaries_json'),
+    path('entries_json/<query>', views.entries_json, name="entries_json"),
+    path('entries_text/<query>', views.entries_text, name="entries_text"),
+
 ]
 
 urlpatterns += [

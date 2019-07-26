@@ -1,147 +1,98 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import generic
 import csv
 from django.http import HttpResponse
-
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from django.utils.html import escape
+from catalog.models import Entries
+from django.utils.html import escape, format_html, mark_safe
+from django_markup.markup import formatter
+from django.core import serializers
 
 # Create your views here.
-from catalog.models import Publication, Author, Journal, Edition
-from catalog.forms import AuthorAutocompleteForm
 
 def index(request):
-    """View function for home page of site."""
 
-    # Generate counts of some of the main objects
-    num_publications = Publication.objects.count()
+    return render(request, 'catalog/index.html',)
 
+def entries_text(request, query):
 
-    # The 'all()' is implied by default.
-    num_authors = Author.objects.count()
+    args = request.GET.get('q', '')
+    entries = Entries.objects.filter(text__icontains=query)
+    text = ''.join([entry.text for entry in entries])
 
-    num_journals = Journal.objects.count()
-    context = {
-        'num_publications': num_publications,
-        'num_authors': num_authors,
-        'num_journals': num_journals,
-    }
+    return HttpResponse(args + text)
 
-    # Render the HTML template index.html with the data in the context variable
-    return render(request, 'catalog/index.html', context=context)
+def entries_json(request, query):
 
-def search(request):
-    authors = Author.objects.all()
-    context = {
-        'authors': authors
-    }
-    return render(request, 'catalog/search.html', context)
+    entries = Entries.objects.filter(text__icontains=query)
 
-def range(request):
-    return render(request, 'catalog/divcontent.html')
+    data = serializers.serialize('json', entries)
+    return HttpResponse(data, content_type='application/json')
 
+class DiariesJson(BaseDatatableView):
+    # the model you're going to show
+    model = Entries
 
-class PublicationListView(generic.ListView):
-    model = Publication
+    """text = models.TextField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    datetop = models.CharField(max_length=220, blank=True, null=True)
+    firstname = models.CharField(max_length=220, blank=True, null=True)
+    lastname = models.CharField(max_length=220, blank=True, null=True)
+    thirdname = models.CharField(max_length=220, blank=True, null=True)
+    nickname = models.CharField(max_length=220, blank=True, null=True)
+    gender = models.IntegerField(blank=True, null=True)
+    info = models.TextField(blank=True, null=True)
+    birthday = models.CharField(max_length=220, blank=True, null=True)
+    deathday = models.CharField(max_length=220, blank=True, null=True)
+    wikilink = models.TextField(blank=True, null=True)"""
 
-class PublicationDetailView(generic.DetailView):
-    model = Publication
+    # define columns that will be returned
+    # they should be the fields of your model, and you may customize their displaying contents in render_column()
+    # don't worry if your headers are not the same as your field names, you will define the headers in your template
+    columns = ['text', 'date', 'firstname', 'thirdname', 'lastname',]# 'info', 'birthday', 'deathday', 'wikilink']
 
-class JournalListView(generic.ListView):
-    model = Journal
+    # define column names that will be used in sorting
+    # order is important and should be same as order of columns displayed by datatables
+    # for non sortable columns use empty value like ''
+    order_columns =  ['text', 'date','firstname', 'thirdname', 'lastname',]# 'info', 'birthday', 'deathday', 'wikilink']
 
-class JournalDetailView(generic.DetailView):
-    model = Journal
+    # set max limit of records returned
+    # this is used to protect your site if someone tries to attack your site and make it return huge amount of data
+    max_display_length = 500
 
-class AuthorListView(generic.ListView):
-    model = Author
+    def render_column(self, row, column):
+        # we want to render 'translation' as a custom column, because 'translation' is defined as a Textfield in Image model,
+        # but here we only want to check the status of translating process.
+        # so, if 'translation' is empty, i.e. no one enters any information in 'translation', we display 'waiting';
+        # otherwise, we display 'processing'.
+        if column == 'text':
+            return format_html("<p>{}</p>".format(formatter(row.text, filter_name='markdown')))
+        if column == 'date':
+            return format_html("<p>{}</p>".format(row.date,))
+        if column == 'firstname':
+            return format_html("<p>{}</p>".format(row.firstname,))
+        if column == 'lastname':
+            return format_html("<p>{}</p>".format(row.lastname,))
+        if column == 'thirdname':
+            return format_html("<p>{}</p>".format(row.thirdname,))
+        if column == 'nickname':
+            return format_html("<p>{}</p>".format(row.nickname,))
+        if column == 'gender':
+            return format_html("<p>{}</p>".format(row.gender,))
 
-class AuthorDetailView(generic.DetailView):
-    model = Author
+        else:
+            return super(DiariesJson, self).render_column(row, column)
 
-class EditionListView(generic.ListView):
-    model = Edition
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
 
-class EditionDetailView(generic.DetailView):
-    model = Edition
-
-def getPublicationByKeyword(request):
-    template = "catalog/search_results.html"
-    query = request.GET.get("keyword")
-    if not query==None:
-        results = Publication.objects.filter(Q(title__icontains=query))
-        num_publications = results.count()
-        context = {
-        'publications': results,
-        'num_results': num_publications,
-        }
-
-        return render(request, template, context)
-    else:
-        return render(request, template, context=None)
-
-def getPublicationByAuthor(request):
-    authors = Author.objects.all().order_by("last_name")
-    template = "catalog/search_results.html"
-    author_query = request.GET.get("author_name")
-    start_year_query = request.GET.get("startYear")
-    end_year_query = request.GET.get("endYear")
-    year = request.GET.get("startYear")
-    if not (author_query==None):
-        results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
-        num_publications = results.count()
-        context = {
-        'publications': results,
-        'num_results': num_publications,
-        'authors': authors,
-        'year': year,
-        }
-#author__last_name__icontains=author_query and
-        return render(request, template, context)
-    else:
-        context = {
-        'publications': None,
-        'num_results': 0,
-        'authors': authors,
-        'year': year,
-        }
-        return render(request, template, context)
-
-
-def some_view(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Publication-Disposition'] = 'attachment; filename="search_results.csv"'
-    #figure out how to get values from html to here
-    #run the query again
-    #write a temp file in memory with the search results so that user can download it
-    #NamedTemporaryFile() - write the result to that file as a csv, pass that to a template
-    writer = csv.writer(response)
-    writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-    writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
-
-    return response
-
-
-def getPublicationByAuthor2(request):
-    authors = Author.objects.all()
-    template = "catalog/search_results.html"
-    author_query = request.GET.get("author_name")
-    start_year_query = request.GET.get("year_min")
-    end_year_query = request.GET.get("year_max")
-
-    if start_year_query==None:      #if no start year was input, set default to zero
-        start_year_query = 0
-    if end_year_query==None:        #if no end year was input, set default to the most current year
-        end_year_query = datetime.date.now().year
-    if author_query==None:          #if no author was input, set author query to empty string to include all authors
-        author_query = ""
-
-    results = Publication.objects.filter(Q(year__lte=end_year_query, year__gte=start_year_query, author__last_name__icontains=author_query))
-    context={
-    'publications': results,
-    'num_results': results.count(),
-    'authors': authors
-    }
-
-    return render(request, template, context)
+        # here is a simple example
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            q = Q(text__icontains=search) | Q(date__icontains=search) | Q(firstname__icontains=search) | Q(lastname__icontains=search)
+            qs = qs.filter(q)
+        return qs

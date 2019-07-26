@@ -1,17 +1,72 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-  <h1>Local Library Home</h1>
-  <p>Welcome to LocalLibrary, a website developed by <em>Mozilla Developer Network</em>!</p>
-  <h2>Dynamic content</h2>
-  <p>The library has the following record counts:</p>
-  <ul>
-    <li><strong>Publications:</strong> {{ num_publications }}</li>
-    <li><strong>Authors:</strong> {{ num_authors }}</li>
-    <li><strong>Journals:</strong> {{ num_journals }}</li>
-  </ul>
+<table class="myTable">
+  <thead>
+     <tr>
+        <th> text </th>
+        <th> date </th>
+         <th> firstname </th>
+         <th> thirdname </th>
+         <th> lastname </th>
+
+<!--
+        <th> datetop </th>
+        <th> firstname </th>
+         <th> lastname </th>
+         <th> thirdname </th>
+         <th> nickname </th>
+         <th> gender </th>
+         <th> info </th>
+         <th> birthday </th>
+         <th> deathday </th>
+         <th> wikilink </th>
+-->
+     </tr>
+  </thead>
+</table>
+<!--
+<script>
+    $(document).ready( function () {
+    $('.myTable').DataTable( {
+    "pageLength": 10,
+    } );
+} );
+
+</script>
+-->
+<script>
+
+
+$(document).ready(function() {
+
+
+    // DataTable
+    var table = $('.myTable').DataTable({
+        // ...
+        "processing": true,
+        "serverSide": true,
+        "ajax": "{% url 'diaries_json' %}",
+        "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Russian.json"
+        },
+        dom: 'Bfrtip',
+        buttons: [
+               'copy',
+               'excel',
+               'csv',
+               'pdf',
+               'print'
+        ]
+    } );
+
+} );
+
+
+</script>
+
 {% endblock %}
 
 {% block title %}
-  <title>Library</title>
+  <title>Prozhito</title>
 {% endblock %}

@@ -1,99 +1,139 @@
+# -*- coding: utf-8 -*-
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-from django.urls import reverse # Used to generate URLs by reversing the URL patterns
 
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.html import format_html
-import datetime
-import uuid
-
-class Journal(models.Model):
-    """Model representing a journal."""
-    name = models.CharField(max_length=200, help_text='Enter a journal name (e.g. Science Fiction)')
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.name
-
-    def get_absolute_url(self):
-        """Returns the url to access a detail record for this journal."""
-        return reverse('journal-detail', args=[str(self.id)])
-
-class Author(models.Model):
-    "Model representing the author of an publication"
-
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-
-    full_name = str(first_name) + " " + str(last_name)
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.last_name
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=80)
 
     class Meta:
-        ordering = ['first_name', 'last_name']
-
-    def get_absolute_url(self):
-        """Returns the url to access a particular author instance."""
-        return reverse('author-detail', args=[str(self.id)])
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.first_name} {self.last_name}'
+        managed = False
+        db_table = 'auth_group'
 
 
-class Edition(models.Model):
-    """Model representing an edition of a journal"""
+class AuthGroupPermissions(models.Model):
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
-    number = models.IntegerField(help_text='Number of the edition')
-    year = models.IntegerField(help_text='Year of the edition', validators=[MinValueValidator(0),
-                                       MaxValueValidator(datetime.date.today().year+1)])
-    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True)
-
-    def get_absolute_url(self):
-        """Returns the url to access a particular edition instance."""
-        return reverse('edition-detail', args=[str(self.id)])
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return (str(self.journal) + " " + str(self.year) + ", " + str(self.number))
-
-class Publication(models.Model):
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
 
 
-    title = models.TextField(help_text='Text of the publication', blank=True,)
-    author = models.ForeignKey(Author, on_delete=models.SET_NULL, max_length=200, null=True,)
-    journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, max_length=200, null=True,)
-    #author = models.CharField(max_length=200, blank=True,)
-    #journal = models.CharField(max_length=200, blank=True,)
-    text = models.TextField(help_text='Text of the publication', blank=True,)
-    year = models.IntegerField(null=True, blank=True, default=None,)
-    issue = models.ForeignKey(Edition, on_delete=models.SET_NULL, max_length=200, null=True,)
-    url = models.TextField(help_text='Text of the publication', blank=True,)
-    #is_translation = Binary
-    #translator =
-    #From TOC
-    #order in toc
-    #genre <i>
-    #category in toc <h6>
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.title
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
 
-    def get_absolute_url(self):
-        """Returns the url to access a detail record for this publication."""
-        #return format_html(u'<a target="_blank" href="{}">{}</a>'.format(self.url, self.url))
-        return reverse('publication-detail', args=[str(self.id)])
 
-class TableofContents(models.Model):
-    order = models.IntegerField(null=True, blank=True, default=None)
-    journal = models.CharField(max_length=200, blank=True,)
-    year = models.IntegerField(null=True, blank=True, default=None)
-    issue = models.IntegerField(null=True, blank=True, default=None)
-    category = models.CharField(max_length=200, blank=True,null=True,)
-    author = models.CharField(max_length=200, blank=True,null=True,)
-    link = models.CharField(max_length=200, blank=True,null=True,)
-    title = models.TextField(help_text='Text of the publication', blank=True,null=True,)
-    genre = models.TextField(help_text='Text of the publication', blank=True,null=True,)
-    text= models.TextField(help_text='Text of the publication', blank=True,null=True,)
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
+class Entries(models.Model):
+    text = models.TextField(blank=True, null=True)
+    lemmatized = models.TextField(blank=True, null=True) 
+    date = models.DateField(blank=True, null=True)
+    datetop = models.CharField(max_length=220, blank=True, null=True)
+    firstname = models.CharField(max_length=220, blank=True, null=True)
+    lastname = models.CharField(max_length=220, blank=True, null=True)
+    thirdname = models.CharField(max_length=220, blank=True, null=True)
+    nickname = models.CharField(max_length=220, blank=True, null=True)
+    gender = models.IntegerField(blank=True, null=True)
+    info = models.TextField(blank=True, null=True)
+    birthday = models.CharField(max_length=220, blank=True, null=True)
+    deathday = models.CharField(max_length=220, blank=True, null=True)
+    wikilink = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'entries'
