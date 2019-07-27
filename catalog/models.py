@@ -118,6 +118,9 @@ class DjangoSession(models.Model):
         managed = False
         db_table = 'django_session'
 
+# TODO add after import of lemmatized text
+#class Tag(models.Model):
+#    tag = models.CharField(primary_key=True, max_length=40)
 
 class Entries(models.Model):
     text = models.TextField(blank=True, null=True)
@@ -133,6 +136,7 @@ class Entries(models.Model):
     birthday = models.CharField(max_length=220, blank=True, null=True)
     deathday = models.CharField(max_length=220, blank=True, null=True)
     wikilink = models.TextField(blank=True, null=True)
+    # tags = models.ManyToManyField(Tag, blank=True, null=True)
 
     class Meta:
         managed = False

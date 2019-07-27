@@ -11,12 +11,26 @@ from catalog.models import Entries
 from django.utils.html import escape, format_html, mark_safe
 from django_markup.markup import formatter
 from django.core import serializers
+import plotly.offline as opy
+import plotly.graph_objs as go
+from django.db.models import Count
 
 # Create your views here.
 
 def index(request):
+    qs = Entries.objects.order_by().values('date').distinct().annotate(Count('date'))
+    x = [q['date'] for q in qs]
+    y = [q['date__count'] for q in qs]
+    trace1 = go.Scatter(x=x, y=y, marker={'color': 'red', 'symbol': 104,},
+                        mode="lines", name='1st Trace')
 
-    return render(request, 'catalog/index.html',)
+    data = go.Data([trace1])
+    layout = go.Layout(title="Количество записей в дневнике по месяцам и годам <br>Всего записей: {}".format(Entries.objects.all().count()), xaxis={'title': 'год'}, yaxis={'title': 'количество'})
+    figure = go.Figure(data=data, layout=layout)
+    div = opy.plot(figure, auto_open=False, output_type='div')
+
+    return render(request, 'catalog/index.html', {'graph': div, })
+
 
 def entries_text(request, query):
 

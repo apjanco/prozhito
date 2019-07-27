@@ -1,6 +1,13 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
+
+{% if graph %}
+<div style="width:600;height:500">
+{{ graph|safe }}
+</div>
+{% endif %}
+
 <table class="myTable">
   <thead>
      <tr>
