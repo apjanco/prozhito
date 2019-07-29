@@ -14,23 +14,58 @@ from django.core import serializers
 import plotly.offline as opy
 import plotly.graph_objs as go
 from django.db.models import Count
+import pickle
 
 # Create your views here.
 
 def index(request):
-    qs = Entries.objects.order_by().values('date').distinct().annotate(Count('date'))
-    x = [q['date'] for q in qs]
-    y = [q['date__count'] for q in qs]
-    trace1 = go.Scatter(x=x, y=y, marker={'color': 'red', 'symbol': 104,},
-                        mode="lines", name='1st Trace')
 
-    data = go.Data([trace1])
-    layout = go.Layout(title="Количество записей в дневнике по месяцам и годам <br>Всего записей: {}".format(Entries.objects.all().count()), xaxis={'title': 'год'}, yaxis={'title': 'количество'})
-    figure = go.Figure(data=data, layout=layout)
-    div = opy.plot(figure, auto_open=False, output_type='div')
+    return render(request, 'catalog/index.html',)
 
-    return render(request, 'catalog/index.html', {'graph': div, })
+def charts(request, type, query):
+    if type == 'by_date':
+        layout = go.Layout(
+            title="<b>Количество записей в дневнике по месяцам и годам</b><br>Всего записей: {}".format(
+                Entries.objects.all().count()),
+            xaxis={'title': 'год'}, yaxis={'title': 'количество'},
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)')
 
+        figure = go.Figure(layout=layout)
+
+        qs = Entries.objects.order_by().values('date').distinct().annotate(Count('date'))
+        x = [q['date'] for q in qs]
+        y = [q['date__count'] for q in qs]
+
+        figure.add_trace(go.Scatter(x=x, y=y, mode="markers", marker=dict(
+            color='#E4653F',
+            size=5),
+                                    ))
+
+        div = opy.plot(figure, auto_open=False, output_type='div')
+
+    #Chart for word frequencies
+    if type == 'word_freq':
+        freq_dict = pickle.load(open('catalog/cleaned_word_freq.pickle', 'rb'))
+        layout = go.Layout(
+            title="<b>Частота слов в полном корпусе</b><br>общее количество лемм: 971 891<br>общее количество слов: 32 064 214",
+            xaxis={'title': 'лемма'}, yaxis={'title': 'количество'},
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)')
+
+        figure = go.Figure(layout=layout)
+
+        x = [q for q in freq_dict]
+        y = [freq_dict[q] for q in freq_dict]
+
+        figure.add_trace(go.Scatter(x=x, y=y, mode="markers", marker=dict(
+            color='#E4653F',
+            size=5),
+                                    ))
+
+        div = opy.plot(figure, auto_open=False, output_type='div')
+
+    return render(request,'catalog/charts.html', {'graph':div,})
 
 def entries_text(request, query):
 

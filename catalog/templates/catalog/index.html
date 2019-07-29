@@ -3,9 +3,12 @@
 {% block content %}
 
 {% if graph %}
+<script src="https://cdn.plot.ly/plotly-locale-ru-latest.js"></script>
 <div style="width:600;height:500">
 {{ graph|safe }}
 </div>
+<script>Plotly.setPlotConfig({locale: 'ru'})</script>
+
 {% endif %}
 
 <table class="myTable">

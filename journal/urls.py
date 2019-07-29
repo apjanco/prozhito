@@ -31,6 +31,7 @@ urlpatterns = [
     path('datatable/', DiariesJson.as_view(), name='diaries_json'),
     path('entries_json/<query>', views.entries_json, name="entries_json"),
     path('entries_text/<query>', views.entries_text, name="entries_text"),
+    path('charts/<type>/<query>', views.charts, name="charts"),
 
 ]
 
